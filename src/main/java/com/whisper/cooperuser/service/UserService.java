@@ -1,14 +1,11 @@
 package com.whisper.cooperuser.service;
 
-import com.whisper.cooperuser.dto.UserDto;
-import com.whisper.cooperuser.entity.User;
-//import com.whisper.cooperuser.entity.UserDetailsImpl;
+import com.whisper.cooperuser.dto.SignUpDto;
+import com.whisper.cooperuser.entity.UserEntity;
 import com.whisper.cooperuser.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,39 +17,30 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new IllegalArgumentException(email));
-//
-//        return new UserDetailsImpl(user);
-//    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public User loadUserByEmail(String email) throws IllegalArgumentException {
+    public UserEntity loadUserByEmail(String email) throws IllegalArgumentException {
         return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 이메일"));
     }
 
     @Transactional
-    public Long create(UserDto dto) {
-        try (User user = loadUserByEmail(dto.getEmail())) {
-            log.info("사용중인 이메일");
-            return null;
-        } catch (Exception e) {
-            log.error(e.toString());
-            return userRepository.save(dto.toEntity()).getId();
+    public Long signUp(SignUpDto requestDto) throws Exception {
+        if (userRepository.findByEmail(requestDto.getEmail()).isPresent()){
+            throw new Exception("사용 중인 이메일입니다.");
         }
+
+        if (!requestDto.getPassword().equals(requestDto.getCheckedPassword())){
+            throw new Exception("비밀번호가 일치하지 않습니다.");
+        }
+
+        UserEntity user = userRepository.save(requestDto.toEntity());
+        user.encodePassword(passwordEncoder);
+
+        return user.getId();
     }
 
-    public User show(String email) throws Exception {
-        try (User user = loadUserByEmail(email)) {
-            return user;
-        } catch (Exception e) {
-            log.error(e.toString());
-            throw e;
-        }
-    }
-
-    public List<User> getUserlList() {
+    public List<UserEntity> getUserlList() {
         return userRepository.findAll();
     }
 }

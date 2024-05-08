@@ -1,43 +1,30 @@
 package com.whisper.cooperuser.controller;
 
-import com.whisper.cooperuser.dto.UserDto;
-import com.whisper.cooperuser.entity.User;
 import com.whisper.cooperuser.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequestMapping("/cooper-user")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/users/signup")
-    public ResponseEntity<Long> addUser(@RequestBody UserDto dto) {
-        log.info(dto.toString());
-        Long id = userService.create(dto);
+    // 유저 조회, 삭제, 수정 등 처리할 컨트롤러
 
-        return id != null ?
-                ResponseEntity.status(HttpStatus.OK).body(id) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    @PostMapping("/user")
+    public ResponseEntity<String> getMyUserInfo() {
+        return ResponseEntity.ok("user");
     }
 
-    @GetMapping("/users/{email}")
-    public ResponseEntity<User> getUser(@PathVariable String email) throws Exception {
-        User user = userService.show(email);
-
-        return ResponseEntity.status(HttpStatus.OK).body(user);
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getUserList() {
-        List<User> userList = userService.getUserlList();
-
-        return ResponseEntity.status(HttpStatus.OK).body(userList);
+    @PostMapping("/user/{username}")
+    public ResponseEntity<String> getUserInfo(@PathVariable String username) {
+        return ResponseEntity.ok("admin");
     }
 }
