@@ -15,12 +15,12 @@ public class UserController {
 
     // 유저 조회, 삭제, 수정 등 처리할 컨트롤러
 
-    @GettMapping("/user")
+    @GetMapping("/user")
     public ResponseEntity<String> getMyUserInfo() {
         return ResponseEntity.ok("user");
     }
 
-    @GettMapping("/user/{username}")
+    @GetMapping("/user/{username}")
     public ResponseEntity<String> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok("admin");
     }
