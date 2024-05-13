@@ -1,6 +1,7 @@
 package com.whisper.cooperuser.service;
 
 import com.whisper.cooperuser.dto.SignUpDto;
+import com.whisper.cooperuser.dto.UserDto;
 import com.whisper.cooperuser.entity.UserEntity;
 import com.whisper.cooperuser.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,12 @@ public class UserService {
 
         return user.getId();
     }
+
+    @Transactional
+    public void deleteByEmail(String username) {
+        userRepository.deleteByEmail(username);
+    }
+
 
     public List<UserEntity> getUserlList() {
         return userRepository.findAll();
