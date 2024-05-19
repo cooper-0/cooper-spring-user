@@ -1,11 +1,12 @@
 package com.whisper.cooperuser.controller;
 
-import com.whisper.cooperuser.entity.UserEntity;
-import com.whisper.cooperuser.service.UserService;
 import com.whisper.cooperuser.dto.UserDto;
+import com.whisper.cooperuser.jwt.UserDetailsImpl;
+import com.whisper.cooperuser.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,23 +17,49 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user")
-    public ResponseEntity<String> getMyUserInfo() {
-        return ResponseEntity.ok("user");
+    public ResponseEntity<UserDto> getMyUserInfo() {
+        // 현재 인증된 사용자의 정보를 가져옴
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDto userDto = userDetails.getUser();
+        return ResponseEntity.ok(userDto);
     }
-    @DeleteMapping("/user/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username) {
+
+    @DeleteMapping("/user/{email}")
+    public ResponseEntity<String> deleteUserByEmail(@PathVariable String email) {
         try {
-            userService.deleteByEmail(username);
-            return ResponseEntity.ok("User deleted successfully");
+            userService.deleteByEmail(email);
+            return ResponseEntity.ok("유저 삭제가 완료되었습니다");
         } catch (Exception e) {
-            log.error("Error deleting user: {}", username, e);
-            return ResponseEntity.badRequest().body("Error deleting user");
+            log.error("삭제에 실패했습니다: {}", email, e);
+            return ResponseEntity.badRequest().body("삭제를 실패했습니다");
         }
     }
 
+    @DeleteMapping("/user/id/{id}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
+        try {
+            userService.deleteById(id);
+            return ResponseEntity.ok("유저 삭제가 완료되었습니다");
+        } catch (Exception e) {
+            log.error("삭제에 실패했습니다: {}", id, e);
+            return ResponseEntity.badRequest().body("삭제를 실패했습니다");
+        }
+    }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<String> getUserInfo(@PathVariable String username) {
-        return ResponseEntity.ok("admin");
+    public ResponseEntity<UserDto> getUserInfo(@PathVariable String username) {
+        UserDto userDto = userService.loadUserByUsername(username);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestParam String name, @RequestParam String password) {
+        try {
+            userService.updateUser(id, name, password);
+            return ResponseEntity.ok("유저 정보가 업데이트되었습니다");
+        } catch (Exception e) {
+            log.error("업데이트에 실패했습니다: {}", id, e);
+            return ResponseEntity.badRequest().body("업데이트를 실패했습니다");
+        }
     }
 }

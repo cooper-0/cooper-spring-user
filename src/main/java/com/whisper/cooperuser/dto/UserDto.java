@@ -1,6 +1,7 @@
 package com.whisper.cooperuser.dto;
 
 import com.whisper.cooperuser.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Data
@@ -17,6 +18,7 @@ public class UserDto {
 
     private String name;
 
+    @JsonIgnore
     private String password;
 
     private Role role;
