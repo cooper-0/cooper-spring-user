@@ -1,8 +1,11 @@
 # cooper-spring-user
 
+\*유저삭제 기능 현재 미작동
 
-src\main\resources   아래 파일 추가 필요
-* application.yml
+src\main\resources 아래 파일 추가 필요
+
+- application.yml
+
   ```
   server:
     port: 0
@@ -10,23 +13,23 @@ src\main\resources   아래 파일 추가 필요
   spring:
     application:
       name: cooper-media
-  
+
     datasource:
       url: {your db adress}
       username: {your username}
       password: {your password}
       driver-class-name: com.mysql.cj.jdbc.Driver
-  
+
     devtools:
       livereload:
         enabled: true
-  
+
     thymeleaf:
       prefix: classpath:/templates/
       suffix: .html
       cache: false
       check-template-location: true
-  
+
   eureka:
     client:
       register-with-eureka: true
@@ -35,3 +38,4 @@ src\main\resources   아래 파일 추가 필요
         defaultZone: http://localhost:8761/eureka
     instance:
       instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  ```
