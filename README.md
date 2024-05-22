@@ -1,6 +1,6 @@
 # cooper-spring-user
 
-\*유저삭제 기능 현재 미작동
+\*유저삭제, 수정 기능 미작동
 
 src\main\resources 아래 파일 추가 필요
 
