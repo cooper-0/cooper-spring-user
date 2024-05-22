@@ -8,12 +8,12 @@ import com.whisper.cooperuser.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +28,7 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Transactional
     public Long signUp(SignUpDto requestDto) throws Exception {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
@@ -67,6 +68,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean idExists(Long id) {
+        return userRepository.findById(id).isPresent();
+    }
+
     // 현재 로그인한 사용자 정보를 반환하는 메서드
     public UserEntity getCurrentUser() {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -88,5 +97,17 @@ public class UserService {
                 userEntity.getPassword(),
                 userEntity.getRole()
         );
+    }
+
+    // 모든 유저 정보를 반환하는 메서드
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserDto(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getName(),
+                        user.getPassword(),
+                        user.getRole()))
+                .collect(Collectors.toList());
     }
 }
