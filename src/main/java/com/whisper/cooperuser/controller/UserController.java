@@ -1,6 +1,7 @@
 package com.whisper.cooperuser.controller;
 
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,10 +10,10 @@ import com.whisper.cooperuser.dto.UserDto;
 import com.whisper.cooperuser.jwt.UserDetailsImpl;
 import com.whisper.cooperuser.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.whisper.cooperuser.entity.UserEntity;
 import java.util.List;
 
 @Slf4j
@@ -102,5 +103,26 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/searchuser")
+    public ResponseEntity<UserDto> searchUser(@RequestBody Map<String, String> request) {
+        String id = request.get("id");
+        String email = request.get("email");
+        String name = request.get("name");
+
+        Optional<UserEntity> userEntity = userService.searchUser(id, email, name);
+        if (userEntity.isPresent()) {
+            UserDto userDto = new UserDto(
+                    userEntity.get().getId(),
+                    userEntity.get().getEmail(),
+                    userEntity.get().getName(),
+                    userEntity.get().getPassword(),
+                    userEntity.get().getRole()
+            );
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 }

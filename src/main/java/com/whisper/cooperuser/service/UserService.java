@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,7 +98,16 @@ public class UserService {
                 userEntity.getRole()
         );
     }
-
+    public Optional<UserEntity> searchUser(String id, String email, String name) {
+        if (id != null && !id.isEmpty()) {
+            return userRepository.findById(Long.parseLong(id));
+        } else if (email != null && !email.isEmpty()) {
+            return userRepository.findByEmail(email);
+        } else if (name != null && !name.isEmpty()) {
+            return userRepository.findByName(name);
+        }
+        return Optional.empty();
+    }
     // 모든 유저 정보를 반환하는 메서드
     public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream()
