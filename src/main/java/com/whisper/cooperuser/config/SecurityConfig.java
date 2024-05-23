@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize                     // 인증, 인가가 필요한 URL 지정
                         .requestMatchers("cooper-user/signup").permitAll() // requestMatchers에서 지정된 url은 인증, 인가 없이도 접근 허용
                         .requestMatchers("cooper-user/signin").permitAll()
-                        .requestMatchers("cooper-user/user/{id}").permitAll()
+                        .requestMatchers("cooper-user/deleteuser").permitAll()
                         .requestMatchers("cooper-user/user").permitAll()
                         .requestMatchers("cooper-user/alluser").permitAll()
                         .requestMatchers("cooper-user/searchuser").permitAll()

@@ -86,18 +86,8 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("없는 이메일"));
     }
 
-    // username으로 UserDto를 반환하는 메서드
-    public UserDto loadUserByUsername(String username) {
-        UserEntity userEntity = userRepository.findByName(username)
-                .orElseThrow(() -> new IllegalArgumentException("없는 사용자 이름"));
-        return new UserDto(
-                userEntity.getId(),
-                userEntity.getEmail(),
-                userEntity.getName(),
-                userEntity.getPassword(),
-                userEntity.getRole()
-        );
-    }
+    @Transactional
+    //개별 유저를 조회하는 메서드
     public Optional<UserEntity> searchUser(String id, String email, String name) {
         if (id != null && !id.isEmpty()) {
             return userRepository.findById(Long.parseLong(id));
