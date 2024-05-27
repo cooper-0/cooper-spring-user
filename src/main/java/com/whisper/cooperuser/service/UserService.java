@@ -11,7 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.Optional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +27,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RestTemplate restTemplate;
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -108,5 +113,26 @@ public class UserService {
                         user.getPassword(),
                         user.getRole()))
                 .collect(Collectors.toList());
+    }
+    // RestTemplate 사용 전체 유저 리스트
+    public List<UserDto> getAllUsersFromApi() {
+        String url = "http:///cooper-userusers"; // 실제 사용 API URL로 변경해 주세요!
+        UserDto[] users = restTemplate.getForObject(url, UserDto[].class);
+        return Arrays.asList(users);
+    }
+
+    // RestTemplate 사용 개별 유저 조회
+    public UserDto getUserFromApi(String id, String email, String name) {
+        String url = "http://cooper-user/users/" + id; // 실제 API URL로 변경해 주세요!
+
+        if (id != null && !id.isEmpty()) {
+            url += "id=" + id;
+        } else if (email != null && !email.isEmpty()) {
+            url += "email=" + email;
+        } else if (name != null && !name.isEmpty()) {
+            url += "name=" + name;
+        }
+
+        return restTemplate.getForObject(url, UserDto.class);
     }
 }

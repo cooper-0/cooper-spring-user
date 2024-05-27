@@ -60,6 +60,8 @@ public class SecurityConfig {
                         .requestMatchers("cooper-user/user").permitAll()
                         .requestMatchers("cooper-user/alluser").permitAll()
                         .requestMatchers("cooper-user/searchuser").permitAll()
+                        .requestMatchers("cooper-user/searchuserapi").permitAll()
+                        .requestMatchers("cooper-user/allusers").permitAll()
 //                        .anyRequest().permitAll()                                   // 인증, 인가 없이 테스트할 때는 모든 경로 허용하고 테스트
                         .anyRequest().authenticated())
 

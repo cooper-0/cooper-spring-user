@@ -1,0 +1,39 @@
+/signin	Post
+{
+	"email" : "test@test.com",
+	"password" : "a123456!"
+}
+
+/signup	Post
+{
+	"email" :  "test@test.com",
+	"password" : "a123456!",
+	"checkedPassword" : "a123456!",
+	"name" : "test"
+}
+
+/alluser    Get
+{
+}
+
+/searchuser    Get
+{
+	"id" : "1"
+	OR
+	"email" : "test@test.com"
+	OR
+	"name" : "test"
+}
+
+/allusers       Get(RestTemplate)
+{
+}
+
+/searchuserapi   Get(RestTemplate)
+{
+	"id" : "1"
+	OR
+	"email" : "test@test.com"
+	OR
+	"name" : "test"
+}

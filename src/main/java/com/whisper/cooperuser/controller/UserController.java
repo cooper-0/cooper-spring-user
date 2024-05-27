@@ -76,4 +76,21 @@ public class UserController {
             return ResponseEntity.status(404).body(null);
         }
     }
+    // RestTemplate 사용 전체 리스트 조회
+    @GetMapping("/allusers")
+    public ResponseEntity<List<UserDto>> getAllUsersFromApi() {
+        List<UserDto> users = userService.getAllUsersFromApi();
+        return ResponseEntity.ok(users);
+    }
+
+    // RestTemplate 사용 개별 유저 조회
+    @GetMapping("/searchuserapi")
+    public ResponseEntity<UserDto> getUserFromApi(@RequestBody Map<String, String> request) {
+        String id = request.get("id");
+        String email = request.get("email");
+        String name = request.get("name");
+
+        UserDto user = userService.getUserFromApi(id, email, name);
+        return ResponseEntity.ok(user);
+    }
 }
