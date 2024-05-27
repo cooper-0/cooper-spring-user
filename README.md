@@ -14,7 +14,7 @@ src\main\resources 아래 파일 추가 필요
 
   spring:
     application:
-      name: cooper-media
+      name: cooper-user
 
     datasource:
       url: {your db adress}
