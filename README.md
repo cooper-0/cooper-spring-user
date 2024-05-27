@@ -1,6 +1,8 @@
 # cooper-spring-user
 
 \*유저삭제, 수정 기능 미작동
+RestTemplate 사용시 UserService 맨 아래
+String url = "http:///cooper-user/users"; 부분을 문서의 URL로 변경해주세요!
 
 src\main\resources 아래 파일 추가 필요
 
