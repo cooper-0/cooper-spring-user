@@ -1,6 +1,7 @@
 package com.whisper.cooperuser.controller;
 
 import java.util.Map;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,45 +25,47 @@ public class UserController {
     @Autowired
     private UserService userService;
     //현재 로그인 되어 있는 유저 정보
-    @GetMapping("/user")
-    public ResponseEntity<UserDto> getMyUserInfo() {
+    @GetMapping("/user/me/{id}")
+    @PreAuthorize("#id == authentication.principal.user.id")
+    public ResponseEntity<UserDto> getMyUserInfo(@PathVariable Long id) {
         // 현재 인증된 사용자의 정보를 가져옴
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!id.equals(userDetails.getUser().getId())) {
+            return ResponseEntity.status(403).body(null); // 403 필요 권한 없음 (본인이 아님)
+        }
         UserDto userDto = userDetails.getUser();
         return ResponseEntity.ok(userDto);
     }
 
    //유저 삭제 
-    @DeleteMapping("/deleteuser")
-    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-        try {
-            if (!userService.idExists(id)) {
-                return ResponseEntity.status(406).body("해당 ID를 가진 사용자가 없습니다.");
-            }
-            userService.deleteById(id);
-            return ResponseEntity.ok("유저 삭제가 완료되었습니다");
-        } catch (Exception e) {
-            log.error("삭제에 실패했습니다: {}", id, e);
-            return ResponseEntity.status(500).body("삭제를 실패했습니다");
-        }
-    }
+   @DeleteMapping("/user/{id}")
+   @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.user.id")
+   public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
+       try {
+           if (!userService.idExists(id)) {
+               return ResponseEntity.status(406).body("해당 ID를 가진 사용자가 없습니다.");
+           }
+           userService.deleteById(id);
+           return ResponseEntity.ok("유저 삭제가 완료되었습니다");
+       } catch (Exception e) {
+           log.error("삭제에 실패했습니다: {}", id, e);
+           return ResponseEntity.status(408).body("삭제를 실패했습니다");
+       }
+   }
 
 
 
     //모든 유저 조회
-    @GetMapping("/alluser")
+    @GetMapping("/user")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
-    //개별 유저 조회
-    @GetMapping("/searchuser")
-    public ResponseEntity<UserDto> searchUser(@RequestBody Map<String, String> request) {
-        String id = request.get("id");
-        String email = request.get("email");
-        String name = request.get("name");
 
-        Optional<UserEntity> userEntity = userService.searchUser(id, email, name);
+    //개별 유저 조회
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDto> searchUser(@PathVariable String id) {
+        Optional<UserEntity> userEntity = userService.searchUser(id, null, null);
         if (userEntity.isPresent()) {
             UserDto userDto = new UserDto(
                     userEntity.get().getId(),
@@ -76,21 +79,18 @@ public class UserController {
             return ResponseEntity.status(404).body(null);
         }
     }
+
     // RestTemplate 사용 전체 리스트 조회
-    @GetMapping("/allusers")
+    @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsersFromApi() {
         List<UserDto> users = userService.getAllUsersFromApi();
         return ResponseEntity.ok(users);
     }
 
     // RestTemplate 사용 개별 유저 조회
-    @GetMapping("/searchuserapi")
-    public ResponseEntity<UserDto> getUserFromApi(@RequestBody Map<String, String> request) {
-        String id = request.get("id");
-        String email = request.get("email");
-        String name = request.get("name");
-
-        UserDto user = userService.getUserFromApi(id, email, name);
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDto> getUserFromApi(@PathVariable String id) {
+        UserDto user = userService.getUserFromApi(id, null, null);
         return ResponseEntity.ok(user);
     }
 }

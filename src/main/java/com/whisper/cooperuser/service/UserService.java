@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Optional;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ public class UserService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.user.id")
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }

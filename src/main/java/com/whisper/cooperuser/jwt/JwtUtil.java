@@ -36,6 +36,7 @@ public class JwtUtil {
         claims.put("userId", user.getId());
         claims.put("email", user.getEmail());
         claims.put("name", user.getName());
+        claims.put("role", user.getRole());
 
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(expirationTime);
