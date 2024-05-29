@@ -16,7 +16,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping("/cooper-user")
 public class AuthController {
     @Autowired
