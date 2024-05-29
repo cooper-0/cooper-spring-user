@@ -124,15 +124,11 @@ public class UserService {
     }
 
     // RestTemplate 사용 개별 유저 조회
-    public UserDto getUserFromApi(String id, String email, String name) {
+    public UserDto getUserFromApi(String id) {
         String url = "http://cooper-user/users"; // 실제 API URL로 변경해 주세요!
 
         if (id != null && !id.isEmpty()) {
             url += "id=" + id;
-        } else if (email != null && !email.isEmpty()) {
-            url += "email=" + email;
-        } else if (name != null && !name.isEmpty()) {
-            url += "name=" + name;
         }
 
         return restTemplate.getForObject(url, UserDto.class);

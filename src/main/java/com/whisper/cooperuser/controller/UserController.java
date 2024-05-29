@@ -19,7 +19,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping("/cooper-user")
 public class UserController {
     @Autowired
@@ -90,7 +89,7 @@ public class UserController {
     // RestTemplate 사용 개별 유저 조회
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDto> getUserFromApi(@PathVariable String id) {
-        UserDto user = userService.getUserFromApi(id, null, null);
+        UserDto user = userService.getUserFromApi(id);
         return ResponseEntity.ok(user);
     }
 }
