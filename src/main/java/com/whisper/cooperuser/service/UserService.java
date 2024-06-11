@@ -1,3 +1,4 @@
+//UserService
 package com.whisper.cooperuser.service;
 
 import com.whisper.cooperuser.dto.SignUpDto;
@@ -116,13 +117,13 @@ public class UserService {
                         user.getRole()))
                 .collect(Collectors.toList());
     }
-    // RestTemplate 사용 전체 유저 리스트
-    public List<UserDto> getAllUsersFromApi() {
-        String url = "http:///cooper-user/users"; // 실제 사용 API URL로 변경해 주세요!
-        UserDto[] users = restTemplate.getForObject(url, UserDto[].class);
-        return Arrays.asList(users);
-    }
+    /*
+    public void sendUserListToApi() {
+        List<UserEntity> userList = userRepository.findAll();
 
+        String apiUrl = "http://localhost:3000/cooper-docs/workspace";
+        restTemplate.postForObject(apiUrl, userList, Void.class);
+    }
     // RestTemplate 사용 개별 유저 조회
     public UserDto getUserFromApi(String id) {
         String url = "http://cooper-user/users"; // 실제 API URL로 변경해 주세요!
@@ -132,5 +133,5 @@ public class UserService {
         }
 
         return restTemplate.getForObject(url, UserDto.class);
-    }
+    }*/
 }

@@ -1,3 +1,4 @@
+//UserController
 package com.whisper.cooperuser.controller;
 
 import java.util.Map;
@@ -36,21 +37,21 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-   //유저 삭제 
-   @DeleteMapping("/user/{id}")
-   @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.user.id")
-   public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-       try {
-           if (!userService.idExists(id)) {
-               return ResponseEntity.status(406).body("해당 ID를 가진 사용자가 없습니다.");
-           }
-           userService.deleteById(id);
-           return ResponseEntity.ok("유저 삭제가 완료되었습니다");
-       } catch (Exception e) {
-           log.error("삭제에 실패했습니다: {}", id, e);
-           return ResponseEntity.status(408).body("삭제를 실패했습니다");
-       }
-   }
+    //유저 삭제
+    @DeleteMapping("/user/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.user.id")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
+        try {
+            if (!userService.idExists(id)) {
+                return ResponseEntity.status(406).body("해당 ID를 가진 사용자가 없습니다.");
+            }
+            userService.deleteById(id);
+            return ResponseEntity.ok("유저 삭제가 완료되었습니다");
+        } catch (Exception e) {
+            log.error("삭제에 실패했습니다: {}", id, e);
+            return ResponseEntity.status(408).body("삭제를 실패했습니다");
+        }
+    }
 
 
 
@@ -78,12 +79,12 @@ public class UserController {
             return ResponseEntity.status(404).body(null);
         }
     }
-
+/*
     // RestTemplate 사용 전체 리스트 조회
-    @GetMapping("/users")
-    public ResponseEntity<List<UserDto>> getAllUsersFromApi() {
-        List<UserDto> users = userService.getAllUsersFromApi();
-        return ResponseEntity.ok(users);
+    @PostMapping("/users")
+    public ResponseEntity<String> sendUserList() {
+        userService.sendUserListToApi();
+        return ResponseEntity.ok("성공");
     }
 
     // RestTemplate 사용 개별 유저 조회
@@ -92,4 +93,6 @@ public class UserController {
         UserDto user = userService.getUserFromApi(id);
         return ResponseEntity.ok(user);
     }
+    
+ */
 }
