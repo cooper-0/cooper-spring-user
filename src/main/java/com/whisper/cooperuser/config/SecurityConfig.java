@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize                     // 인증, 인가가 필요한 URL 지정
                         .requestMatchers("cooper-user/signup").permitAll() // requestMatchers에서 지정된 url은 인증, 인가 없이도 접근 허용
                         .requestMatchers("cooper-user/signin").permitAll()
+                        .requestMatchers("cooper-user/user").hasRole("USER")
 //                        .anyRequest().permitAll()                                   // 인증, 인가 없이 테스트할 때는 모든 경로 허용하고 테스트
                         .anyRequest().authenticated())
 

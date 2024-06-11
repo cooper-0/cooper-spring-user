@@ -30,8 +30,6 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

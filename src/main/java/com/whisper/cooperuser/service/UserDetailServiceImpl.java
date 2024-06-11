@@ -18,7 +18,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         UserEntity user = userRepository.findById(Long.parseLong(id))
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저가 없습니다." + id));
 
         UserDto userDto = new UserDto(
                 user.getId(),

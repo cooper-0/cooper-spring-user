@@ -5,6 +5,9 @@ import java.util.Map;
 import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,9 +15,7 @@ import com.whisper.cooperuser.dto.UserDto;
 import com.whisper.cooperuser.jwt.UserDetailsImpl;
 import com.whisper.cooperuser.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
 import com.whisper.cooperuser.entity.UserEntity;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class UserController {
     @GetMapping("/user")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     //개별 유저 조회
