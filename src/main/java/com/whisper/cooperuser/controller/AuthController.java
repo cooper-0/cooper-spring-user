@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
@@ -34,8 +36,12 @@ public class AuthController {
     public ResponseEntity<?> signIn(@Valid @RequestBody SignInDto user) {
         log.info(user.toString());
         try {
-            String token = authService.signIn(user);
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", token));
+            Map<String, Object> response = authService.signIn(user);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "등록되지 않은 이메일입니다."));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "잘못된 비밀번호입니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
         }
