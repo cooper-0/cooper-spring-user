@@ -26,10 +26,14 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Long> signUp(@Valid @RequestBody SignUpDto user) throws Exception {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto user) {
         log.info(user.toString());
-        Long id = userService.signUp(user);
-        return ResponseEntity.status(HttpStatus.OK).body(id);
+        try {
+            Long id = userService.signUp(user);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("id", id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/signin")
