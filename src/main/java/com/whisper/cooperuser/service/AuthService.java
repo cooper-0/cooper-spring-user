@@ -12,7 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,17 +21,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public String signIn(SignInDto user) {
+    public Map<String, Object> signIn(SignInDto user) {
         UserEntity userEntity = userRepository.findByEmail(user.getEmail()).orElse(null);
 
-        // 이메일 검증
         if (userEntity == null) {
             throw new UsernameNotFoundException("이메일이 존재하지 않습니다.");
         }
 
-        // 비밀번호 검증
-        if(!encoder.matches(user.getPassword(), userEntity.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        if (!encoder.matches(user.getPassword(), userEntity.getPassword())) {
+            throw new BadCredentialsException("잘못된 비밀번호입니다.");
         }
 
         UserDto userDto = new UserDto(
@@ -42,7 +40,14 @@ public class AuthService {
                 userEntity.getRole()
         );
 
-        // 유저 정보 바탕으로 토큰 생성
-        return jwtUtil.createToken(userDto);
+        String token = jwtUtil.createToken(userDto);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("id", userDto.getId());
+        response.put("name", userDto.getName());
+        response.put("role", userDto.getRole());
+
+        return response;
     }
 }
